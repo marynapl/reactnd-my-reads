@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 class Book extends Component {
+  static propTypes = {
+    book: PropTypes.object.isRequired
+  }
   render() {
     const { book } = this.props;
     const bookAuthor = (book.authors.length > 0) && book.authors[0];
@@ -20,7 +24,7 @@ class Book extends Component {
               <option value="move" disabled>Move to...</option>
               <option value="currentlyReading">Currently Reading</option>
               <option value="wantToRead">Want to Read</option>
-              <option value="read" selected>Read</option>
+              <option value="read">Read</option>
               <option value="none">None</option>
             </select>
           </div>
