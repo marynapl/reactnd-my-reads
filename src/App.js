@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
 import MyBooks from './components/MyBooks.js';
 import AddBook from './components/AddBook.js';
-import * as BooksAPI from './BooksAPI';
+import * as BooksAPI from './BooksAPI.js';
 import './App.css';
 
 class BooksApp extends Component {

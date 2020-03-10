@@ -7,7 +7,13 @@ class Book extends Component {
   }
   render() {
     const { book } = this.props;
-    const bookAuthor = (book.authors.length > 0) && book.authors[0];
+    const title = book.title && book.title;
+    const author = book.authors && 
+      book.authors.length > 0 && 
+      book.authors[0];
+    const thumbnail = book.imageLinks && 
+      book.imageLinks.thumbnail && 
+      book.imageLinks.thumbnail;
 
     return (
       <div className="book">
@@ -16,7 +22,7 @@ class Book extends Component {
             style={{ 
               width: 128, 
               height: 193, 
-              backgroundImage: `url("${book.imageLinks.thumbnail}")` 
+              backgroundImage: `url("${thumbnail}")` 
               }}>
           </div>
           <div className="book-shelf-changer">
@@ -29,8 +35,8 @@ class Book extends Component {
             </select>
           </div>
         </div>
-        <div className="book-title">{book.title}</div>
-        <div className="book-authors">{bookAuthor}</div>
+        <div className="book-title">{title}</div>
+        <div className="book-authors">{author}</div>
       </div>
     )
   }
