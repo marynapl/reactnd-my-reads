@@ -13,9 +13,10 @@ class Book extends Component {
     const { book } = this.props;
     const title = book.title ? book.title : "";
     const shelf = book.shelf ? book.shelf : "none";
-    const author = book.authors &&
-      book.authors.length > 0 &&
-      book.authors[0];
+    const authors = book.authors
+      && book.authors.map((author, i) => (
+        <div key={i}>{author}</div>
+      ));
     const thumbnail = book.imageLinks &&
       book.imageLinks.thumbnail &&
       book.imageLinks.thumbnail;
@@ -43,7 +44,7 @@ class Book extends Component {
           </div>
         </div>
         <div className="book-title">{title}</div>
-        <div className="book-authors">{author}</div>
+        <div className="book-authors">{authors}</div>
       </div>
     )
   }
