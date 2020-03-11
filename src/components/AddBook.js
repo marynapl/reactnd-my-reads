@@ -14,15 +14,17 @@ class AddBook extends Component {
     books: []
   }
   static getDerivedStateFromProps(props, currentState) {
-    if (currentState.books.length > 0) {
-      let books = [...currentState.books];
-      books.forEach((book) => {
-        const found = props.books.find((myBook) => (
-          myBook.id === book.id
-        ));
-        book.shelf = found ? found.shelf : "none";
-      });
-    }
+    let books = [...currentState.books];
+    books.forEach((book) => {
+      const found = props.books.find((myBook) => (
+        myBook.id === book.id
+      ));
+      book.shelf = found ? found.shelf : "none";
+    });
+    return {
+      query: currentState.query,
+      books: books
+    };
   }
   handleShelfChange = (book, shelf) => {
     this.props.onShelfChange(book, shelf);
@@ -51,7 +53,6 @@ class AddBook extends Component {
           this.setState(() => ({
             books
           }));
-          console.log("Search", books);
         }
       });
   }
