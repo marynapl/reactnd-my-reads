@@ -5,7 +5,11 @@ import BooksList from './BooksList.js';
 
 class MyBooks extends Component {
   static propTypes = {
-    books: PropTypes.array.isRequired
+    books: PropTypes.array.isRequired,
+    onShelfChange: PropTypes.func.isRequired
+  }
+  handleShelfChange = (book, shelf) => {
+    this.props.onShelfChange(book, shelf);
   }
   render() {
     const { books } = this.props;
@@ -19,15 +23,18 @@ class MyBooks extends Component {
           <div>
             <BookShelf books={books}
               category={"currentlyReading"}
-              title={"Currently Reading"} />
+              title={"Currently Reading"}
+              onShelfChange={this.handleShelfChange} />
 
             <BookShelf books={books}
               category={"wantToRead"}
-              title={"Want To Read"} />
+              title={"Want To Read"}
+              onShelfChange={this.handleShelfChange} />
 
             <BookShelf books={books}
               category={"read"}
-              title={"Read"} />
+              title={"Read"}
+              onShelfChange={this.handleShelfChange} />
           </div>
         </div>
         <Link
@@ -40,21 +47,29 @@ class MyBooks extends Component {
   }
 }
 
-const BookShelf = (props) => {
-  const { books, category, title } = props; 
-  const showingBooks = (books.length > 0) &&
-    (books.filter((book) => (
-      book.shelf.toLowerCase() === category.toLowerCase()
-    )));
+class BookShelf extends Component {
+  handleShelfChange = (book, shelf) => {
+    this.props.onShelfChange(book, shelf);
+  }
+  render() {
+    const { books, category, title } = this.props;
+    const showingBooks = books.length === 0 ? []
+      : (books.filter((book) => (
+        book.shelf.toLowerCase() === category.toLowerCase()
+      )));
 
-  return (
-    <div className="bookshelf">
-      <h2 className="bookshelf-title">{title}</h2>
-      <div className="bookshelf-books">
-        <BooksList books={showingBooks} />
+    return (
+      <div className="bookshelf">
+        <h2 className="bookshelf-title">{title}</h2>
+        <div className="bookshelf-books">
+          <BooksList
+            books={showingBooks}
+            onShelfChange={this.handleShelfChange}
+          />
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
 }
 
 export default MyBooks;

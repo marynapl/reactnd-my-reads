@@ -14,18 +14,33 @@ class BooksApp extends Component {
       .then((books) => {
         this.setState(() => ({
           books
-        }))
-        console.log("My books", books);
-      })
+        }));
+      });
+  }
+  handleShelfChange = (book, shelf) => {
+    BooksAPI.update(book, shelf)
+      .then(() => {
+        BooksAPI.getAll()
+          .then((books) => {
+            this.setState(() => ({
+              books
+            }));
+          });
+      });
   }
   render() {
     return (
       <div className="app">
         <Route exact path='/' render={() => (
-          <MyBooks books={this.state.books} />
+          <MyBooks
+            books={this.state.books}
+            onShelfChange={this.handleShelfChange}
+          />
         )} />
         <Route path='/search' render={() => (
-          <AddBook />
+          <AddBook  
+            books={this.state.books}
+            onShelfChange={this.handleShelfChange} />
         )} />
       </div>
     )

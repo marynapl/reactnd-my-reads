@@ -1,20 +1,39 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import * as BooksAPI from '../BooksAPI.js';
 import BooksList from './BooksList.js';
 
 class AddBook extends Component {
+  static propTypes = {
+    books: PropTypes.array.isRequired,
+    onShelfChange: PropTypes.func.isRequired
+  }
   state = {
     query: '',
     books: []
   }
-  handleChange = (e) => {
-    const query = e.target.value.trim();
+  static getDerivedStateFromProps(props, currentState) {
+    if (currentState.books.length > 0) {
+      let books = [...currentState.books];
+      books.forEach((book) => {
+        const found = props.books.find((myBook) => (
+          myBook.id === book.id
+        ));
+        book.shelf = found ? found.shelf : "none";
+      });
+    }
+  }
+  handleShelfChange = (book, shelf) => {
+    this.props.onShelfChange(book, shelf);
+  }
+  handleSearchChange = (e) => {
+    const query = e.target.value;
     this.setState(() => ({
       query
     }));
 
-    if(query === '') {
+    if (query === '') {
       this.setState(() => ({
         books: []
       }));
@@ -26,16 +45,14 @@ class AddBook extends Component {
         const books = data.error
           ? []
           : data;
-        if(query === this.state.query) {
+        if (query === this.state.query) {
           // Update books in the state only if query has not changed
           // This scenario could happen when typing too fast
           this.setState(() => ({
             books
           }));
+          console.log("Search", books);
         }
-      })
-      .catch((error) => {
-        console.log("Error", error);
       });
   }
   render() {
@@ -50,14 +67,16 @@ class AddBook extends Component {
             Close
           </Link>
           <div className="search-books-input-wrapper">
-            <input type="text" 
+            <input type="text"
               placeholder="Search by title or author"
               value={query}
-              onChange={this.handleChange} />
+              onChange={this.handleSearchChange} />
           </div>
         </div>
         <div className="search-books-results">
-          <BooksList books={books} /> 
+          <BooksList
+            books={books}
+            onShelfChange={this.handleShelfChange} />
         </div>
       </div>
     )
