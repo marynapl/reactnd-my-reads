@@ -3,15 +3,22 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import * as BooksAPI from '../BooksAPI.js';
 import BooksList from './BooksList.js';
+import * as _ from 'underscore';
 
 class AddBook extends Component {
   static propTypes = {
     books: PropTypes.array.isRequired,
     onShelfChange: PropTypes.func.isRequired
   }
-  state = {
-    query: '',
-    books: []
+  constructor(props){
+    super(props);
+
+    this.state = {
+      query: '',
+      books: []
+    };
+
+    this.searchThrottled = _.throttle(this.search, 3000);
   }
   static getDerivedStateFromProps(props, currentState) {
     let books = [...currentState.books];
@@ -26,35 +33,33 @@ class AddBook extends Component {
       books: books
     };
   }
-  handleShelfChange = (book, shelf) => {
-    this.props.onShelfChange(book, shelf);
+  clearSearch = () => {
+    this.setState({
+      books: []
+    });
   }
-  handleSearchChange = (e) => {
-    const query = e.target.value;
-    this.setState(() => ({
-      query
-    }));
-
+  search = (query) => {
     if (query === '') {
-      this.setState(() => ({
-        books: []
-      }));
+      this.clearSearch();
       return;
     }
 
     BooksAPI.search(query)
       .then((data) => {
-        const books = data.error
-          ? []
-          : data;
+        const books = data.error ? [] : data;
         if (query === this.state.query) {
-          // Update books in the state only if query has not changed
-          // This scenario could happen when typing too fast
-          this.setState(() => ({
-            books
-          }));
+          this.setState({ books });
         }
       });
+  }
+  handleShelfChange = (book, shelf) => {
+    this.props.onShelfChange(book, shelf);
+  }
+  handleSearchChange = (e) => {
+    const query = e.target.value;
+    this.setState({ query }, () => {
+      this.searchThrottled(this.state.query);
+    });
   }
   render() {
     const { query, books } = this.state;
