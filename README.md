@@ -1,8 +1,8 @@
-# MyReads Project
+# MyReads Application
 
 This is a bookshelf app that allows you to select and categorize books you have read, are currently reading, or want to read.
 
-## TL;DR
+## Setup
 
 To get started:
 
