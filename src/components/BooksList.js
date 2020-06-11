@@ -1,31 +1,29 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import Book from './Book.js';
 
-class BooksList extends Component {
-  static propTypes = {
-    books: PropTypes.array.isRequired,
-    onShelfChange: PropTypes.func.isRequired
+function BooksList(props) {
+  const handleShelfChange = (book, shelf) => {
+    props.onShelfChange(book, shelf);
   }
-  handleShelfChange = (book, shelf) => {
-    this.props.onShelfChange(book, shelf);
-  }
-  render() {
-    const { books } = this.props;
+  const { books } = props;
+  return (
+    <ol className="books-grid">
+      {books.length > 0 && books.map((book) => (
+        <li key={book.id}>
+          <Book
+            book={book}
+            onShelfChange={handleShelfChange}
+          />
+        </li>
+      ))}
+    </ol>
+  )
+}
 
-    return (
-      <ol className="books-grid">
-        {books.length > 0 && books.map((book) => (
-          <li key={book.id}>
-            <Book
-              book={book}
-              onShelfChange={this.handleShelfChange}
-            />
-          </li>
-        ))}
-      </ol>
-    )
-  }
+BooksList.propTypes = {
+  books: PropTypes.array.isRequired,
+  onShelfChange: PropTypes.func.isRequired
 }
 
 export default BooksList;
